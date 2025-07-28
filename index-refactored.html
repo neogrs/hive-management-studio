@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Last Z Alliance Hive Builder - Refactored</title>
+
+  <!-- React Production -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div id="root">
+    <div
+      style="display: flex; justify-content: center; align-items: center; height: 100vh; color: white; background: linear-gradient(135deg, #1f2937, #111827);">
+      <div style="text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">⚡</div>
+        <div>Loading Refactored Alliance Hive Builder...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Babel for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Load modules in order -->
+  <script type="text/babel" src="constants.js"></script>
+  <script type="text/babel" src="utils.js"></script>
+  <script type="text/babel" src="components/Header.js"></script>
+  <script type="text/babel" src="components/PlayerModal.js"></script>
+  <script type="text/babel" src="components/HexagonPlayer.js"></script>
+  <script type="text/babel" src="components/Legend.js"></script>
+  <script type="text/babel" src="app-refactored.js"></script>
+
+  <!-- Verification Script -->
+  <script>
+    console.log('✅ React loaded:', typeof React !== 'undefined');
+    console.log('✅ ReactDOM loaded:', typeof ReactDOM !== 'undefined');
+    console.log('✅ Babel loaded:', typeof Babel !== 'undefined');
+    console.log('🚀 Refactored Alliance Hive Builder loaded successfully!');
+  </script>
+</body>
+
+</html>
