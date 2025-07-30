@@ -1,9 +1,10 @@
 const { Edit3, Trash2 } = window.ICONS;
 
 /**
- * Individual hexagon player component
+ * Unified hexagon component with integrated edit button
+ * Contains hexagon shape, player info, and 3 dots edit button
  */
-const HexagonPlayer = ({
+const Hexagon = ({
   player,
   position,
   hexSize,
@@ -12,7 +13,6 @@ const HexagonPlayer = ({
   isDropdownActive,
   onDropdownToggle
 }) => {
-  console.log('HexagonPlayer render:', player.name, 'playerId:', player.id, 'onEdit:', typeof onEdit, 'onDelete:', typeof onDelete);
   const roleConfig = window.getRoleConfig(player.role);
   const hexWidth = hexSize * 2;
   const formattedName = window.formatPlayerName(player.name, hexSize > 50 ? 12 : 8);
@@ -31,14 +31,16 @@ const HexagonPlayer = ({
 
   const hexPath = createHexPath(hexSize);
 
-
+  // 3 dots button position (fixed relative to hexagon)
+  const dotsX = position.x + window.ALLIANCE_CONFIG.MENU_BUTTON.offsetX;
+  const dotsY = position.y + window.ALLIANCE_CONFIG.MENU_BUTTON.offsetY;
 
   return (
     <g
       className="hex-group group cursor-pointer"
       style={{ pointerEvents: 'all' }}
     >
-      {/* Hexagon Background - Visual only */}
+      {/* Hexagon Background */}
       <path
         d={hexPath}
         transform={`translate(${position.x}, ${position.y})`}
@@ -125,9 +127,102 @@ const HexagonPlayer = ({
         {player.role}
       </text>
 
+      {/* 3 Dots Edit Button */}
+      <circle
+        cx={dotsX}
+        cy={dotsY}
+        r={14}
+        fill={isDropdownActive ? "rgba(249, 115, 22, 0.9)" : "rgba(0, 0, 0, 0.8)"}
+        stroke="rgba(249, 115, 22, 0.8)"
+        strokeWidth="2"
+        className="cursor-pointer transition-all duration-200 hover:fill-orange-500"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDropdownToggle(player.id);
+        }}
+        style={{ pointerEvents: 'all' }}
+      />
+      <text
+        x={dotsX}
+        y={dotsY + 4}
+        textAnchor="middle"
+        className="font-bold"
+        fill={isDropdownActive ? "white" : "#f97316"}
+        style={{ fontSize: '14px', pointerEvents: 'none' }}
+      >
+        ⋮
+      </text>
+
+      {/* Dropdown Menu */}
+      {isDropdownActive && (
+        <g>
+          {/* Dropdown Background */}
+          <rect
+            x={dotsX - 90}
+            y={dotsY + 20}
+            width={120}
+            height={60}
+            rx={8}
+            fill="rgba(31, 41, 55, 0.95)"
+            stroke="rgba(249, 115, 22, 0.5)"
+            strokeWidth="2"
+            style={{ pointerEvents: 'all' }}
+          />
+
+          {/* Edit Button */}
+          <rect
+            x={dotsX - 85}
+            y={dotsY + 25}
+            width={110}
+            height={20}
+            rx={4}
+            fill="transparent"
+            className="cursor-pointer hover:fill-blue-500/20"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(player);
+            }}
+            style={{ pointerEvents: 'all' }}
+          />
+          <text
+            x={dotsX - 30}
+            y={dotsY + 38}
+            textAnchor="middle"
+            className="fill-white cursor-pointer"
+            style={{ fontSize: '12px', pointerEvents: 'none' }}
+          >
+            ✏️ Edit
+          </text>
+
+          {/* Delete Button */}
+          <rect
+            x={dotsX - 85}
+            y={dotsY + 45}
+            width={110}
+            height={20}
+            rx={4}
+            fill="transparent"
+            className="cursor-pointer hover:fill-red-500/20"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(player.id);
+            }}
+            style={{ pointerEvents: 'all' }}
+          />
+          <text
+            x={dotsX - 30}
+            y={dotsY + 58}
+            textAnchor="middle"
+            className="fill-red-400 cursor-pointer"
+            style={{ fontSize: '12px', pointerEvents: 'none' }}
+          >
+            🗑️ Delete
+          </text>
+        </g>
+      )}
     </g>
   );
 };
 
 // Make available globally
-window.HexagonPlayer = HexagonPlayer; 
+window.Hexagon = Hexagon; 

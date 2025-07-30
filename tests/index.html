@@ -1,0 +1,75 @@
+// App.jsx
+import React, { useRef, useEffect, useState } from "react";
+
+const HEX_RADIUS = 30;
+const CIRCLE_RADIUS = 5;
+
+function App() {
+const canvasRef = useRef(null);
+const [hexagons, setHexagons] = useState([]);
+const [dropdown, setDropdown] = useState(null); // { x, y, index }
+
+const drawHexagon = (ctx, x, y) => {
+ctx.beginPath();
+for (let i = 0; i < 6; i++) { const angle=Math.PI / 3 * i; const hx=x + HEX_RADIUS * Math.cos(angle); const hy=y +
+  HEX_RADIUS * Math.sin(angle); ctx.lineTo(hx, hy); } ctx.closePath(); ctx.fillStyle="#3F51B5" ; ctx.fill();
+  ctx.strokeStyle="#000" ; ctx.stroke(); // Circle in center ctx.beginPath(); ctx.arc(x, y, CIRCLE_RADIUS, 0, 2 *
+  Math.PI); ctx.fillStyle="#FFC107" ; ctx.fill(); ctx.stroke(); }; const drawAll=()=> {
+  const canvas = canvasRef.current;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hexagons.forEach(({ x, y }) => drawHexagon(ctx, x, y));
+  };
+
+  useEffect(() => {
+  drawAll();
+  }, [hexagons]);
+
+  const handleCanvasClick = (e) => {
+  const rect = canvasRef.current.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  hexagons.forEach(({ x, y }, index) => {
+  const dx = mouseX - x;
+  const dy = mouseY - y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  if (distance <= CIRCLE_RADIUS) { setDropdown({ x: e.clientX, y: e.clientY, index }); } }); }; const addPlayer=()=> {
+    const padding = 10;
+    const offsetX = hexagons.length * (HEX_RADIUS * 1.5 + padding) + HEX_RADIUS;
+    const y = 150;
+    setHexagons([...hexagons, { x: offsetX, y }]);
+    setDropdown(null);
+    };
+
+    const handleEdit = () => {
+    alert("Edit clicked on hexagon " + dropdown.index);
+    setDropdown(null);
+    };
+
+    const handleDelete = () => {
+    const updated = hexagons.filter((_, i) => i !== dropdown.index);
+    setHexagons(updated);
+    setDropdown(null);
+    };
+
+    return (
+    <div style={{ position: "relative" , padding: 20 }}>
+      <button onClick={addPlayer}>New Player</button>
+      <canvas ref={canvasRef} width={800} height={300} onClick={handleCanvasClick} style={{ border: "1px solid #ccc" ,
+        marginTop: 10 }} />
+
+      {dropdown && (
+      <div style={{ position: "absolute" , top: dropdown.y, left: dropdown.x, background: "white" ,
+        boxShadow: "0 2px 5px rgba(0,0,0,0.2)" , border: "1px solid #ccc" , borderRadius: 4, padding: 8, zIndex: 10, }}>
+        <button onClick={handleEdit}>Edit</button>
+        <button onClick={handleDelete} style={{ marginLeft: 8 }}>
+          Delete
+        </button>
+      </div>
+      )}
+    </div>
+    );
+    }
+
+    export default App;node -v
